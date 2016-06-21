@@ -4,6 +4,7 @@ using Microsoft.Owin;
 using Owin;
 using System.Web.Http;
 using Microsoft.AspNet.SignalR;
+using Microsoft.Owin.Cors;
 
 [assembly: OwinStartup(typeof(_06OwinSignalR.Startup))]
 
@@ -23,8 +24,14 @@ namespace _06OwinSignalR
             WebApiConfig.Register(config);
             app.UseWebApi(config);
 
-            var hubConfig = new HubConfiguration();
-            app.RunSignalR(hubConfig);
+
+            app.Map("", map => {
+                map.UseCors(CorsOptions.AllowAll);
+                var hubConfig = new HubConfiguration() { EnableJSONP=true};
+                map.RunSignalR(hubConfig);
+            });
+
+
         }
     }
 }

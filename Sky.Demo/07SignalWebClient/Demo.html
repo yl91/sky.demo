@@ -3,15 +3,17 @@
 <head>
     <title>消息接收端</title>
     <script src="Scripts/jquery-1.6.4.min.js" type="text/javascript"></script>
-    <script src="Scripts/json2.js"></script>
     <script src="Scripts/jquery.signalR-1.1.4.min.js" type="text/javascript"></script>
+    <script src="Scripts/json2.js"></script>
+
     <script src="http://127.0.0.1:9594/Signalr/Hubs"></script>
     <script src="Scripts/artDialog4.1.7/jquery.artDialog.source.js?skin=default" type="text/javascript"></script>
 
 </head>
 <body>
-
+    Pad:<textarea id="padtxt"></textarea><br />
     Mobile:<textarea id="mobiletxt"></textarea><br />
+    PC:<textarea id="PCtext"></textarea><br />
     <div id="div"></div>
     <script>
             artDialog.notice = function (options) {
@@ -58,11 +60,10 @@
                 return artDialog(config);
             };
             $.connection.hub.url = "http://127.0.0.1:9594/signalr";
-            var pushHubmobile = $.connection.pushHub;
-            pushHubmobile.client.notice = function (message) {
-                //alert(message);
-                var r = $('#mobiletxt').val() + "\r\n=================================";
-                $('#mobiletxt').val(r+"\r\n" +message);
+            var pushHub = $.connection.pushHub;
+            pushHub.client.notice = function (message) {
+                //$('#div').html($('#div').html() + "</br>" + message);
+                $('#mobiletxt').val( message);
                 art.dialog.notice({
                     title: '我是服务器推送来的通知!Mobile',
                     width: 220, // 必须指定一个像素宽度值或者百分比，否则浏览器窗口改变可能导致artDialog收缩
@@ -71,7 +72,7 @@
                     time: 5
                 });
             };
-            $.connection.hub.start();
+            $.connection.hub.start({ xdomain: true });
     </script>
 </body>
 </html>
